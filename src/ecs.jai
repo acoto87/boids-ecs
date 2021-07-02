@@ -7,6 +7,8 @@
 #import "utils";
 #import "strings";
 
+#load "boids.jai";
+#load "flock.jai";
 #load "game.jai";
 
 EXIT_SUCCESS :: 0;
@@ -34,11 +36,10 @@ main :: () {
                 "ECS Demo 1: % at % fps (%)",
                 formatFloat(ctx.time, trailing_width=2, zero_removal=FormatFloat.Zero_Removal.NO),
                 ctx.fps,
-                formatFloat(ctx.deltaTime, trailing_width=2, zero_removal=FormatFloat.Zero_Removal.NO)
+                formatFloat(ctx.deltaTime, trailing_width=4, zero_removal=FormatFloat.Zero_Removal.NO)
             )
         );
 
-        // inputGame();
         updateGame();
         renderGame();
         presentGame();

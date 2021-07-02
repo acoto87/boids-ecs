@@ -20,6 +20,8 @@ GameContext :: struct {
     window: *GLFWwindow;
 
     gfx: *NVGcontext;
+
+    flock: *List(*Boid);
 }
 
 #add_context gameContext: *GameContext;
@@ -163,6 +165,8 @@ initGame :: (windowTitle: string, originalWindowSize: Vec2i, globalScale: f32, g
         return false;
     }
 
+    initFlock();
+
     glViewport(0, 0, cast(u32) ctx.framebufferSize.x, cast(u32) ctx.framebufferSize.y);
     glClearColor(0, 0, 0, 1.0);
 
@@ -183,15 +187,19 @@ updateGame :: () {
     ctx := context.gameContext;
     assert(ctx != null);
 
-    // if (isKeyPressed(Keys.Ctrl) && wasKeyPressed(Keys.P)) {
-    //     ctx.paused = !ctx.paused;
-    // }
+    if (glfwIsKeyPressed(GLFW_KEY_ESCAPE)) {
+        glfwSetWindowShouldClose(ctx.window, GLFW_TRUE);
+    }
+
+    if (glfwIsKeyPressed(GLFW_KEY_P)) {
+        ctx.paused = !ctx.paused;
+    }
 
     if (ctx.paused) {
         return;
     }
 
-    // updateScene();
+    updateFlock();
 }
 
 renderGame :: () {
@@ -202,7 +210,7 @@ renderGame :: () {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     nvgBeginFrame(ctx.gfx, cast(f32) ctx.windowSize.x, cast(f32) ctx.windowSize.y, ctx.devicePixelRatio);
-    // renderScene();
+    renderFlock();
     nvgEndFrame(ctx.gfx);
 }
 
@@ -245,4 +253,11 @@ inputCharCallback :: (window: *GLFWwindow, codepoint: u32) #c_call {
     push_context newContext {
         // call here some method to process keys
     }
+}
+
+glfwIsKeyPressed :: inline (key: s32) -> bool {
+    ctx := context.gameContext;
+    assert(ctx != null);
+
+    return glfwGetKey(ctx.window, key) == GLFW_PRESS;
 }

@@ -1,0 +1,90 @@
+// #import "glfw";
+// #import "GL";
+// #import "stb_image";
+// #import "stb_image_write";
+// #import "nanovg";
+// #import "collections";
+// #import "utils";
+// #import "strings";
+// #import "rts2d"(
+//     MaxPlayersCount = 5,
+//     MaxPlayerResourcesCount = 3,
+// );
+
+// #load "war_constants.jai";
+// #load "war_types.jai";
+// #load "war_database.jai";
+// #load "war_file.jai";
+// #load "war_resources.jai";
+// #load "war_font.jai";
+// #load "war_sprites.jai";
+// #load "war_animations.jai";
+// #load "war_audio.jai";
+// #load "war_components.jai";
+// #load "war_cheats.jai";
+// #load "war_entities.jai";
+// #load "war_units.jai";
+// #load "war_trees.jai";
+// #load "war_scenes.jai";
+// #load "war_ui.jai";
+// #load "war_campaigns.jai";
+// #load "war_map.jai";
+// #load "war_map_ui.jai";
+// #load "war_map_update.jai";
+// #load "war_map_render.jai";
+// #load "war_game.jai";
+
+// EXIT_SUCCESS :: 0;
+// EXIT_FAILURE :: -1;
+
+// main :: () {
+//     loggerData := LoggerData.{
+//         severity = LogSeverity.Debug
+//     };
+//     initLogger(*loggerData);
+
+//     ctx: WarContext;
+//     context.gameContext = *ctx;
+
+//     if (!initWarGame()) {
+//         logError("Can't initialize the game!\n");
+//         exit(EXIT_FAILURE);
+//     }
+
+//     while (!glfwWindowShouldClose(ctx.window)) {
+//         setWindowTitle(
+//             sprint(
+//                 "War 1: % at % fps (%)",
+//                 formatFloat(ctx.time, trailing_width=2, zero_removal=FormatFloat.Zero_Removal.NO),
+//                 ctx.fps,
+//                 formatFloat(ctx.deltaTime, trailing_width=2, zero_removal=FormatFloat.Zero_Removal.NO)
+//             )
+//         );
+
+//         inputGame();
+//         updateGame();
+//         renderGame();
+//         presentGame();
+
+//         resetTemporaryStorage();
+//     }
+
+//     uninitGame();
+
+//     exit(EXIT_SUCCESS);
+// }
+
+// #scope_file
+
+// Compiler :: #import "Compiler";
+// setTypeInfoFlags :: Compiler.compiler_set_type_info_flags;
+
+// #run setTypeInfoFlags(GL_Procedures, .PROCEDURES_ARE_VOID_POINTERS);
+// #run setTypeInfoFlags(GL_Procedures, .NO_SIZE_COMPLAINT);
+
+#import "utils";
+
+main :: () {
+    m := alloc(void, 1);
+    print("%\n", size_of(void));
+}

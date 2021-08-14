@@ -21,7 +21,7 @@ GameContext :: struct {
 
     gfx: *NVGcontext;
 
-    flock: *List(*Boid);
+    flock: *Flock;
 }
 
 #add_context gameContext: *GameContext;
@@ -165,6 +165,7 @@ initGame :: (windowTitle: string, originalWindowSize: Vec2i, globalScale: f32, g
         return false;
     }
 
+    ctx.flock = alloc(Flock);
     initFlock();
 
     glViewport(0, 0, cast(u32) ctx.framebufferSize.x, cast(u32) ctx.framebufferSize.y);

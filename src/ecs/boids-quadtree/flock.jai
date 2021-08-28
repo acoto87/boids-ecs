@@ -17,6 +17,9 @@ TrailComponent :: struct {
     positions: List(Vec2);
 }
 
+// https://medium.com/osedea/boids-e98093b3b4fe
+// https://zacktherrien.github.io/boids/
+
 Flock :: struct {
     world: *ecs_world_t;
     positionId: ecs_entity_t;
@@ -82,7 +85,7 @@ initFlock :: (numberOfBoids := NUMBER_OF_BOIDS) {
     } else {
         updateBoidsSystemId := ecs_system(world, "UpdateBoids", updateBoids, 0, "PositionComponent, VelocityComponent");
     }
-    renderBoidsSystemId := ecs_system(world, "RenderBoids", renderBoids, 0, "PositionComponent, VelocityComponent, ColorComponent");
+    renderBoidsSystemId := ecs_system(world, "RenderBoids", renderBoids, 0, "PositionComponent, VelocityComponent, ColorComponent", colorId, orderByColor);
 
     #if (RENDER_TRAILS) {
         renderTrailsSystemId := ecs_system(world, "RenderTrails", renderTrails, 0, "TrailComponent, ColorComponent");
@@ -189,9 +192,34 @@ renderBoids :: (it: *ecs_iter_t) #c_call {
         velocityComponents := ecs_term(it, VelocityComponent, 2);
         colorComponents := ecs_term(it, ColorComponent, 3);
 
+        nvgSave(ctx.gfx);
+        nvgBeginPath(ctx.gfx);
+        nvgAddPath(ctx.gfx);
+
         for i : 0..it.count-1 {
-            renderBoid(ctx.gfx, positionComponents[i].position, velocityComponents[i].velocity, colorComponents[i].color);
+            position := positionComponents[i].position;
+            velocity := velocityComponents[i].velocity;
+            color := colorComponents[i].color;
+
+            nvgSave(ctx.gfx);
+            nvgTranslate(ctx.gfx, position.x, position.y);
+
+            nvgTranslate(ctx.gfx, 0, 2*BOID_HEIGHT/3);
+            angle := angleClockwise(VEC2_UP, velocity);
+            nvgRotate(ctx.gfx, angle);
+            nvgTranslate(ctx.gfx, 0, -2*BOID_HEIGHT/3);
+
+            nvgMoveTo(ctx.gfx, 0, 0);
+            nvgLineTo(ctx.gfx, -BOID_WIDTH/2, BOID_HEIGHT);
+            nvgLineTo(ctx.gfx, 0, 2*BOID_HEIGHT/3);
+            nvgLineTo(ctx.gfx, BOID_WIDTH/2, BOID_HEIGHT);
+            nvgClosePath(ctx.gfx);
+            nvgRestore(ctx.gfx);
         }
+
+        nvgFillColor(ctx.gfx, nvgRGB(COLOR_RED.r, COLOR_RED.g, COLOR_RED.b));
+        nvgFill(ctx.gfx);
+        nvgRestore(ctx.gfx);
 
         #if (RENDER_PERCEPTION) {
             renderBoidPerception(ctx, positionComponents[0].position);
@@ -243,4 +271,16 @@ renderQuadTree :: (ctx: *GameContext, tree: *QuadTree) {
             renderQuadTree(ctx, *tree.children[i]);
         }
     }
+}
+
+orderByColor :: (e1: ecs_entity_t, ptr1: *void, e2: ecs_entity_t, ptr2: *void) -> s32 #c_call {
+    c1 := cast(*ColorComponent) ptr1;
+    c2 := cast(*ColorComponent) ptr2;
+    if c1.color.r < c2.color.r then return -1;
+    if c1.color.r > c2.color.r then return 1;
+    if c1.color.g < c2.color.g then return -1;
+    if c1.color.g > c2.color.g then return 1;
+    if c1.color.b < c2.color.b then return -1;
+    if c1.color.b > c2.color.b then return 1;
+    return 0;
 }

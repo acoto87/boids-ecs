@@ -157,7 +157,7 @@ initGame :: (windowTitle: string, originalWindowSize: Vec2i, globalScale: f32, g
     glCheckOpenGLVersion();
 
     // init graphics
-    ctx.gfx = nvgCreateGL2(NVGcreateFlags.NVG_STENCIL_STROKES | .NVG_DEBUG);
+    ctx.gfx = nvgCreateGL2(NVGcreateFlags.NVG_ANTIALIAS | .NVG_DEBUG);
     if (ctx.gfx == null) {
         logError("Could not init nanovg.\n");
         glfwDestroyWindow(ctx.window);
@@ -200,7 +200,7 @@ updateGame :: () {
         return;
     }
 
-    updateFlock();
+    // updateFlock();
 }
 
 renderGame :: () {
@@ -211,7 +211,71 @@ renderGame :: () {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     nvgBeginFrame(ctx.gfx, cast(f32) ctx.windowSize.x, cast(f32) ctx.windowSize.y, ctx.devicePixelRatio);
-    renderFlock();
+    // renderFlock();
+
+    nvgSave(ctx.gfx);
+    // nvgBeginPathBatch(ctx.gfx);
+    nvgBeginPath(ctx.gfx);
+
+    nvgSave(ctx.gfx);
+    nvgTranslate(ctx.gfx, 100.0, 100.0);
+    nvgScale(ctx.gfx, 3, 3);
+    nvgMoveTo(ctx.gfx, 50,  5);
+    nvgLineTo(ctx.gfx, 80, 30);
+    nvgLineTo(ctx.gfx, 65, 60);
+    nvgLineTo(ctx.gfx, 35, 60);
+    nvgLineTo(ctx.gfx, 20, 30);
+    nvgClosePath(ctx.gfx);
+    nvgRestore(ctx.gfx);
+
+    // for i : 0..10 {
+    //     for j : 0..10 {
+    //         nvgSave(ctx.gfx);
+    //         nvgTranslate(ctx.gfx, j * 100.0, i * 100.0);
+    //         nvgMoveTo(ctx.gfx, 50,  5);
+    //         nvgLineTo(ctx.gfx, 80, 30);
+    //         nvgLineTo(ctx.gfx, 65, 60);
+    //         nvgLineTo(ctx.gfx, 35, 60);
+    //         nvgLineTo(ctx.gfx, 20, 30);
+    //         nvgClosePath(ctx.gfx);
+    //         nvgRestore(ctx.gfx);
+    //     }
+    // }
+
+    nvgFillColor(ctx.gfx, nvgRGB(255, 0, 0));
+    // nvgFillBatch(ctx.gfx);
+    nvgFill(ctx.gfx);
+
+    nvgRestore(ctx.gfx);
+
+    // nvgSave(ctx.gfx);
+    // // nvgAddPath(ctx.gfx);
+
+    // nvgBeginPathBatch(ctx.gfx);
+
+    // // nvgBeginPath(ctx.gfx);
+    // nvgMoveTo(ctx.gfx, 100, 100);
+    // nvgLineTo(ctx.gfx, 200, 100);
+    // nvgLineTo(ctx.gfx, 200, 200);
+    // nvgLineTo(ctx.gfx, 100, 200);
+    // nvgClosePath(ctx.gfx);
+    // // nvgFillColor(ctx.gfx, nvgRGB(255, 0, 0));
+    // // nvgFill(ctx.gfx);
+
+    // // nvgBeginPath(ctx.gfx);
+    // nvgMoveTo(ctx.gfx, 300, 100);
+    // nvgLineTo(ctx.gfx, 400, 100);
+    // nvgLineTo(ctx.gfx, 400, 200);
+    // nvgLineTo(ctx.gfx, 300, 200);
+    // nvgClosePath(ctx.gfx);
+    // // nvgFillColor(ctx.gfx, nvgRGB(255, 0, 0));
+    // // nvgFill(ctx.gfx);
+
+    // nvgFillColor(ctx.gfx, nvgRGB(255, 0, 0));
+    // nvgFill(ctx.gfx);
+
+    // nvgRestore(ctx.gfx);
+
     nvgEndFrame(ctx.gfx);
 }
 

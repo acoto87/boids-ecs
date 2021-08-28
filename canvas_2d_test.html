@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <script>
+            const BOID_WIDTH = 10;
+            const BOID_HEIGHT = 12;
+
+            let canvas, ctx;
+            let fps;
+            let width, height;
+            let boids = [];
+
+            let t = Date.now();
+            let q = 1000;
+
+            function render() {
+                ctx.save();
+                ctx.beginPath();
+
+                for (let i = 0; i < boids.length; i++) {
+                    const boid = boids[i];
+
+                    ctx.save();
+                    ctx.translate(boid.x, boid.y);
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(0, 0);
+                    ctx.lineTo(-BOID_WIDTH/2, BOID_HEIGHT);
+                    ctx.lineTo(0, 2*BOID_HEIGHT/3);
+                    ctx.lineTo(BOID_WIDTH/2, BOID_HEIGHT);
+                    ctx.closePath();
+                    ctx.restore();
+                }
+
+                ctx.fillStyle = "rgb(255, 0, 0)";
+                ctx.fill();
+                ctx.restore();
+
+                let n = Date.now();
+                let d = n - t;
+                if (q <= 0) {
+                    fps.innerText = d.toString();
+                    q = 1000;
+                }
+                q -= d;
+                t = n;
+
+                requestAnimationFrame(render);
+            }
+
+            window.onload = () => {
+                fps = document.getElementById("fps");
+                canvas = document.getElementById("canvas");
+                ctx = canvas.getContext("2d");
+
+                width = canvas.width;
+                height = canvas.height;
+
+                boids = [];
+                for (let i = 0; i < 1000; i++) {
+                    boids.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height
+                    });
+                }
+
+                requestAnimationFrame(render);
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas" width="1366" height="768"></canvas>
+        <div id="fps"></div>
+    </body>
+</html>
